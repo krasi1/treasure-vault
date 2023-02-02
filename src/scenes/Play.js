@@ -7,57 +7,131 @@ gsap.registerPlugin(PixiPlugin);
 
 export default class Play extends Scene {
   async onCreated() {
+    this.accessible = true;
     this.sortableChildren = true;
+    let bg = PIXI.Sprite.from(Assets._assets.playBg),
+      closedDoor = PIXI.Sprite.from(Assets._assets.door),
+      handle = PIXI.Sprite.from(Assets._assets.handle),
+      handleShadow = PIXI.Sprite.from(Assets._assets.handleShadow),
+      openDoor = PIXI.Sprite.from(Assets._assets.doorOpen),
+      openDoorShadow = PIXI.Sprite.from(Assets._assets.doorOpenShadow);
 
-    let bg = PIXI.Sprite.from(Assets._assets.playBg);
-    bg.anchor.set(0.5);
-    bg.scale.set(0.35);
+    spriteSetup(bg, 0, 0, 0);
+    spriteSetup(closedDoor, 20, -10, 0);
+    spriteSetup(handle, -12, -10, 1);
+    spriteSetup(handleShadow, -7, 0, 0);
+    spriteSetup(openDoor, 515, -10, 3);
 
-    let closedDoor = PIXI.Sprite.from(Assets._assets.door);
-    closedDoor.anchor.set(0.5);
-    closedDoor.scale.set(0.35);
-    closedDoor.position.set(20, -10);
-
-    let handle = PIXI.Sprite.from(Assets._assets.handle);
-    handle.anchor.set(0.5);
-    handle.scale.set(0.35);
-    handle.position.set(-12, -10);
-    handle.zIndex = 1;
-
-    let handleShadow = PIXI.Sprite.from(Assets._assets.handleShadow);
-    handleShadow.anchor.set(0.5);
-    handleShadow.scale.set(0.35);
-    handleShadow.position.set(-7, 0);
-
-    this.addChild(bg, closedDoor, handle, handleShadow);
-
-    function generateCode() {
-      let sides = ["clockwise", "counterclockwise"];
-
-      let combinations = [];
-
-      function combination(rotation, side) {
-        this.rotation = rotation;
-        this.side = side;
-      }
-
-      for(let i = 0; i <= 2; i++){
-        let comb = new combination(Math.floor(Math.random() * (9 - 1) + 1), sides[Math.floor(Math.random() * 2)]);
-        combinations.push(comb);
-        console.log(combinations[i].rotation, combinations[i].side);
-      } 
-
-      return combinations;
-    
+    function spriteSetup(sprite, x, y, zindex) {
+      sprite.anchor.set(0.5);
+      sprite.scale.set(0.35);
+      sprite.position.set(x, y);
+      sprite.zIndex = zindex;
     }
 
-    generateCode();
-
-    const left = keyboard("ArrowLeft"),
-    right = keyboard("ArrowRight");
-
+    this.addChild(bg, closedDoor, handle, handleShadow);
+    let combinations = [];
 
     
+    generateCode();
+    
+    const left = keyboard("ArrowLeft"),
+      right = keyboard("ArrowRight");
+    let counter = 0,
+    degrees = [0, 60, 120, 180, 240, 300, 360, 420, 480, 540],
+    spinSide,
+    victoryCount = 0;
+
+      left.press = () => {
+        if (counter < 9) {
+          counter++;
+        spinSide = "counterclockwise";
+      }
+      if (counter == 1) {
+        setTimeout(() => {
+            if (
+            degrees[counter] != degrees[combinations[victoryCount].rotation] &&
+            spinSide == combinations[victoryCount].side
+            ) {
+              reset();
+            } else if (victoryCount < 3) {
+              console.log("correct");
+              counter = 0;
+              gsap.to(handle, { pixi: { rotation: 0 }, duration: 1 });
+              victoryCount++;
+
+              if (victoryCount == 3) {
+                win();
+                this.removeChild(closedDoor, handle, handleShadow);
+                this.addChild(openDoor);
+              }
+            }
+        }, 8000);
+      }
+      gsap.to(handle, { pixi: { rotation: -degrees[counter] }, duration: 0.3 });
+    };
+    
+    right.press = () => {
+      if (counter < 9) {
+        counter++;
+        spinSide = "clockwise";
+      }
+      if (counter == 1) {
+        setTimeout(() => {
+            if (degrees[counter] != degrees[combinations[victoryCount].rotation] && spinSide == combinations[victoryCount].side) {
+              reset();
+            } else if (victoryCount < 3) {
+              console.log("correct");
+              counter = 0;
+              gsap.to(handle, { pixi: { rotation: 0 }, duration: 1 });
+              victoryCount++;
+              
+              if (victoryCount == 3) {
+                win();
+                this.removeChild(closedDoor, handle, handleShadow);
+                this.addChild(openDoor);
+              }
+            }
+          }, 8000);
+        }
+        gsap.to(handle, { pixi: { rotation: degrees[counter] }, duration: 0.3 });
+      };
+
+      function generateCode() {
+        let sides = ["clockwise", "counterclockwise"];
+  
+        function combination(rotation, side) {
+          this.rotation = rotation;
+          this.side = side;
+        }
+  
+        for (let i = 0; i <= 2; i++) {
+          combinations.push(
+            new combination(Math.floor(Math.random() * (9 - 1) + 1) , sides[Math.floor(Math.random() * 2)])
+          );
+          console.log(combinations[i].rotation, combinations[i].side);
+        }
+      }
+  
+      function reset() {
+        combinations = [];
+        counter = 0;
+        gsap.to(handle, { pixi: { rotation: 0 }, duration: 1 });
+        generateCode();
+      }
+  
+      function win() {
+        gsap.fromTo(
+          bg,
+          { pixi: { brightness: 0 } },
+          { pixi: { brightness: 1 }, duration: 5 }
+        );
+        gsap.fromTo(
+          openDoor,
+          { pixi: { brightness: 0 } },
+          { pixi: { brightness: 1 }, duration: 5 }
+        );
+      }
   }
 
   /**
