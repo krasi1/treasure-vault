@@ -53,15 +53,15 @@ export default class Play extends Scene {
       rightPressed = false;
 
     left.press = () => {
-      rightPressed?
-      reset()
+      rightPressed?()=>{
+      reset()}
       :gameLogic("counterclockwise", [-0, -60, -120, -180, -240, -300, -360, -420, -480, -540]);
       leftPressed = true;   
     };
 
     right.press = () => {
-      leftPressed?
-      reset()
+      leftPressed?()=>{
+      reset()}
       :gameLogic("clockwise", [0, 60, 120, 180, 240, 300, 360, 420, 480, 540]);
       rightPressed = true;
     };
