@@ -1,10 +1,9 @@
 
-import Assets from "../core/AssetManager";
-import { keyboard } from "../core/keyboard";
-import gsap from "gsap";
-import { PixiPlugin } from "gsap/all";
-
-
+/**
+ * function that generates an array of objects that have a degree and side property and logs them for the player to see 
+ * @param {*} combinations 
+ * 
+ */
 export function generateCode(combinations) {
     let sides = ["clockwise", "counterclockwise"];
 
@@ -21,7 +20,14 @@ export function generateCode(combinations) {
     return combinations;
   }
 
-
+  /**
+   * simple function that adjusts the necessary parameters of all the sprites on screen
+   * all assets are a bit too large so their scale is set to .35 
+   * @param {*} sprite 
+   * @param {*} x 
+   * @param {*} y 
+   * @param {*} zindex 
+   */
   export function spriteSetup(sprite, x, y, zindex) {
     sprite.anchor.set(0.5);
     sprite.scale.set(0.35);

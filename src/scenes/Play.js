@@ -44,7 +44,7 @@ export default class Play extends Scene {
     
     const left = keyboard("ArrowLeft"),
       right = keyboard("ArrowRight");
-
+    //necessary vars for gamelogic.  
     let counter = 0,
       victoryCount = 0,
       timeout,
@@ -52,6 +52,7 @@ export default class Play extends Scene {
       leftPressed = false,
       rightPressed = false;
 
+    //handlers for  the left and right arrow keys via the keyboard function imported from keyboard.js 
     left.press = () => {
       rightPressed?()=>{
       reset()}
@@ -66,6 +67,13 @@ export default class Play extends Scene {
       rightPressed = true;
     };
 
+    /**
+     * main game logic. Variables are updated based on the key pressed and then are compared to the generated key code via a switch statement.
+     * variables are compared within a setTimeout that gets cleared and called again everytime a key is pressed and the functions are called after inputs from the player stop for 1.5 seconds
+     *  @param deg array of possible degrees from 1 to 9 times 60. negative for counterclockwise positive for clockwise
+     *  @param spinSide 
+     */
+    
     function gameLogic(spinSide, deg){
 
       if (counter < 9) {
@@ -97,6 +105,10 @@ export default class Play extends Scene {
       gsap.to(handle, { pixi: { rotation: deg[counter] }, duration: 0.3 });
       gsap.to(handleShadow, { pixi: { rotation: deg[counter] }, duration: 0.3 });
     }
+    /**
+     * resets all the varibles used in gameLogic and generates a new code
+     * also plays a gsap animation where the handle "spins like crazy"
+     */
     
     function reset() {
       clearTimeout(timeout);
@@ -110,7 +122,10 @@ export default class Play extends Scene {
       gsap.to(handleShadow,{ pixi: { rotation: 720 }}, { pixi: { rotation: 0 }, duration: 1 });
       generateCode(combinations);  
     }
-
+    /**
+     * starts a countdown that updates the text ot @timer every second
+     */
+    
     function startTimer(){     
       scene.addChild(timer);
   
@@ -120,7 +135,11 @@ export default class Play extends Scene {
     }, 1000);
 
     }
-
+    /**
+     * fades the background in and out while removing the sprites from the playing scene and adding the ones for the winning scene
+     * after a 6 seconds delay the fading in is reversed and the playing scene is reset
+     */
+    
     function win() {
       let blink = PIXI.Sprite.from(Assets._assets.blink);
       spriteSetup(blink, -50, 0, 3)
