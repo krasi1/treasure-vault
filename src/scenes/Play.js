@@ -106,8 +106,8 @@ export default class Play extends Scene {
       counter = 0;
       rightPressed = false;
       leftPressed = false;
-      gsap.to(handle, { pixi: { rotation: 0 }, duration: 1 });
-      gsap.to(handleShadow, { pixi: { rotation: 0 }, duration: 1 });
+      gsap.fromTo(handle,{ pixi: { rotation: 720 }}, { pixi: { rotation: 0 }, duration: 1 });
+      gsap.to(handleShadow,{ pixi: { rotation: 720 }}, { pixi: { rotation: 0 }, duration: 1 });
       generateCode(combinations);  
     }
 
