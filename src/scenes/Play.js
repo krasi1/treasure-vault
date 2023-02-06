@@ -136,12 +136,10 @@ export default class Play extends Scene {
             gsap.to(bg, {pixi:{brightness: 1}, duration: 0.1})
             scene.addChild(closedDoor, handle, handleShadow);
             scene.removeChild(openDoor, openDoorShadow, blink);
-            gsap.fromTo(handle, {pixi:{rotation: 720}}, {pixi:{rotation:0}, duration: 1});
-            gsap.fromTo(handleShadow, {pixi:{rotation: 720}}, {pixi:{rotation:0}, duration: 1});
             setTimeout(()=>{
               reset();
               scene.addChild(timer);
-            }, 1500)
+            }, 500)
     
           });     
       }, 6000);
