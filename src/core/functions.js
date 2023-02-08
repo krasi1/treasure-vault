@@ -1,4 +1,3 @@
-/* eslint-disable semi */
 
 export class Combination {
   constructor (rotation, side) {
@@ -22,4 +21,8 @@ export function spriteSetup (sprite, x, y, zindex) {
   sprite.scale.set(0.35);
   sprite.position.set(x, y);
   sprite.zIndex = zindex;
+}
+
+export function sleep (ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
