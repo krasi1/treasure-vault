@@ -93,6 +93,7 @@ export default class Play extends Scene {
         resetHandle();
         if (playerCombinations.length === 3 && JSON.stringify(gameCombinations) === JSON.stringify(playerCombinations)) {
           win();
+          console.clear();
           console.log('Congratulations!');
         } else if (playerCombinations.length === 3) {
           reset();
